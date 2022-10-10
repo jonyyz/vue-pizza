@@ -1,17 +1,11 @@
 <template>
   <div id="app">
-    <h1>Olo Pizza Exercise in Vue</h1>
+    <h1>Olo Pizza Exercise using Vue 3 Composition API and Vite</h1>
     <table class="comboCounts">
       <tr>
-        <th>
-          Rank
-        </th>
-        <th>
-          Toppings
-        </th>
-        <th>
-          # times ordered
-        </th>
+        <th>Rank</th>
+        <th>Toppings</th>
+        <th># times ordered</th>
       </tr>
       <tr
         :key="rank"
@@ -31,7 +25,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #eee;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,13 +37,13 @@
   th,
   td {
     text-align: left;
-    border: solid 1px #aaa;
+    border: solid 1px #eee;
     padding: 0.5em;
   }
 
   th {
     vertical-align: bottom;
-    background-color: #ccc;
+    background-color: #aaa;
   }
 
   td {
@@ -58,48 +52,44 @@
 }
 </style>
 
-<script>
+<script setup>
 import axios from "axios";
 import { isEqual, orderBy } from "lodash";
+import { onMounted, ref } from "vue";
 
-export default {
-  name: "Pizza",
-  data: () => ({
-    topPizzaToppingComboCounts: []
-  }),
-  async created() {
-    document.title = "Olo Pizza Exercise";
+document.title = "Olo Pizza Exercise";
 
-    const { data: pizzas } = await axios.get(
-      "https://cors-anywhere.herokuapp.com/https://www.olo.com/pizzas.json"
-    );
+const topPizzaToppingComboCounts = ref([]);
 
-    const toppingComboCounts = pizzas.reduce(
-      (toppingComboCounts, { toppings }) => {
-        const normalizedToppings = toppings.slice().sort();
-        const combo = toppingComboCounts.find(
-          ({ toppings: existingToppings }) =>
-            isEqual(existingToppings, normalizedToppings)
-        );
+onMounted(async () => {
+  const { data: pizzas } = await axios.get(
+    "http://localhost:8080/https://www.olo.com/pizzas.json"
+  );
 
-        if (combo) {
-          combo.count += 1;
-        } else {
-          toppingComboCounts.push({ toppings, count: 1 });
-        }
+  const toppingComboCounts = pizzas.reduce(
+    (toppingComboCounts, { toppings }) => {
+      const normalizedToppings = toppings.slice().sort();
+      const combo = toppingComboCounts.find(({ toppings: existingToppings }) =>
+        isEqual(existingToppings, normalizedToppings)
+      );
 
-        return toppingComboCounts;
-      },
-      []
-    );
+      if (combo) {
+        combo.count += 1;
+      } else {
+        toppingComboCounts.push({ toppings, count: 1 });
+      }
 
-    this.topPizzaToppingComboCounts = orderBy(
-      toppingComboCounts,
-      "count",
-      "desc"
-    )
-      .slice(0, 20)
-      .map((comboCount, index) => ({ ...comboCount, rank: index + 1 }));
-  }
-};
+      return toppingComboCounts;
+    },
+    []
+  );
+
+  topPizzaToppingComboCounts.value = orderBy(
+    toppingComboCounts,
+    "count",
+    "desc"
+  )
+    .slice(0, 20)
+    .map((comboCount, index) => ({ ...comboCount, rank: index + 1 }));
+});
 </script>
