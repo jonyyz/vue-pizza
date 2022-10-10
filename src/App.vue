@@ -62,6 +62,8 @@ document.title = "Olo Pizza Exercise";
 const topPizzaToppingComboCounts = ref([]);
 
 onMounted(async () => {
+  // Using local proxy to get around CORS headers issue:
+  // https://www.npmjs.com/package/cors-anywhere
   const { data: pizzas } = await axios.get(
     "http://localhost:8080/https://www.olo.com/pizzas.json"
   );
