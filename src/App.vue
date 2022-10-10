@@ -1,25 +1,27 @@
 <template>
   <div id="app">
     <h1>Olo Pizza Exercise using Vue 3 Composition API and Vite</h1>
-    <table class="comboCounts">
-      <tr>
-        <th>Rank</th>
-        <th>Toppings</th>
-        <th># times ordered</th>
-      </tr>
-      <tr
-        :key="rank"
-        v-for="{ rank, toppings, count } in topPizzaToppingComboCounts"
-      >
-        <td>{{ rank }}</td>
-        <td>{{ toppings.join(", ") }}</td>
-        <td>{{ count }}</td>
-      </tr>
-    </table>
+    <div :class="$style.tableWrapper">
+      <table>
+        <tr>
+          <th>Rank</th>
+          <th>Toppings</th>
+          <th># Times Ordered</th>
+        </tr>
+        <tr
+          :key="rank"
+          v-for="{ rank, toppings, count } in topPizzaToppingComboCounts"
+        >
+          <td>{{ rank }}</td>
+          <td>{{ toppings.join(", ") }}</td>
+          <td>{{ count }}</td>
+        </tr>
+      </table>
+    </div>
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" module>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -31,23 +33,40 @@
   align-items: center;
 }
 
-.comboCounts {
-  border-collapse: collapse;
+$border-style: solid 1px #eee;
 
-  th,
-  td {
-    text-align: left;
-    border: solid 1px #eee;
-    padding: 0.5em;
-  }
+.tableWrapper {
+  display: inline-flex;
+  border: $border-style;
+  border-radius: 10px;
+  overflow: hidden;
 
-  th {
-    vertical-align: bottom;
-    background-color: #aaa;
-  }
+  > table {
+    border-collapse: collapse;
 
-  td {
-    vertical-align: top;
+    th,
+    td {
+      text-align: left;
+      padding: 0.5em;
+
+      &:not(:last-child) {
+        border-right: $border-style;
+      }
+    }
+
+    th {
+      vertical-align: bottom;
+      background-color: #a6a6a6;
+      color: #242424;
+    }
+
+    td {
+      vertical-align: top;
+    }
+
+    tr:not(:last-child) {
+      border-bottom: $border-style;
+    }
   }
 }
 </style>
