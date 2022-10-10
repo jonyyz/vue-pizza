@@ -75,11 +75,8 @@ onMounted(async () => {
         isEqual(existingToppings, normalizedToppings)
       );
 
-      if (combo) {
-        combo.count += 1;
-      } else {
-        toppingComboCounts.push({ toppings, count: 1 });
-      }
+      if (combo) combo.count += 1;
+      else toppingComboCounts.push({ toppings, count: 1 });
 
       return toppingComboCounts;
     },
